@@ -29,10 +29,9 @@
             @endif
 
             <!-- Form -->
-            <form action="{{ route('thermal.store') }}" method="POST" class="space-y-5">
+            <form action="{{ route('thermal.store') }}" method="POST" class="space-y-5" novalidate>
                 @csrf
 
-                <!-- Sample ID Field -->
                 <div>
                     <label for="sample_id" class="block text-sm font-medium text-gray-700 mb-2">
                         ID Sampel <span class="text-red-500">*</span>
@@ -55,55 +54,66 @@
                     @enderror
                 </div>
 
-                <!-- Temperature Field with Real-time Validation -->
-                <div x-data="{ temperature: '', isWarning: false, isExceeded: false }"
-                     @input="
-                        temperature = $el.querySelector('input[name=temperature_celsius]').value;
-                        isWarning = temperature > 90 && temperature <= 95;
-                        isExceeded = temperature > 95;
-                    ">
+                <div x-data="{ temperature: '', isWarning: false, isExceeded: false, isNegative: false, showInvalidCharWarning: false }">
                     <label for="temperature_celsius" class="block text-sm font-medium text-gray-700 mb-2">
                         Suhu Pemanasan (°C) <span class="text-red-500">*</span>
                     </label>
 
-                    <!-- Input Field -->
                     <div class="relative">
                         <input
-                            type="number"
+                            type="text"
                             id="temperature_celsius"
                             name="temperature_celsius"
-                            step="0.1"
-                            min="0"
-                            max="100"
+                            @input="
+                                let originalValue = $event.target.value;
+                                let sanitizedValue = originalValue.replace(/[^0-9.,-]/g, '');
+
+                                /* Munculkan peringatan jika ada huruf/simbol yang diblokir */
+                                if (originalValue !== sanitizedValue) {
+                                    showInvalidCharWarning = true;
+                                    setTimeout(() => { showInvalidCharWarning = false }, 3000);
+                                }
+
+                                /* Kembalikan input ke angka yang sudah dibersihkan */
+                                $event.target.value = sanitizedValue;
+                                
+                                /* Logika status warna */
+                                let tempCheck = sanitizedValue.replace(',', '.');
+                                isWarning = tempCheck > 90 && tempCheck <= 95;
+                                isExceeded = tempCheck > 95;
+                                isNegative = tempCheck !== '' && parseFloat(tempCheck) < 0;
+                                temperature = tempCheck;
+                            "
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('temperature_celsius') border-red-500 focus:ring-red-500 @enderror"
                             placeholder="Masukkan suhu (contoh: 85.5)"
                             value="{{ old('temperature_celsius') }}"
                             required
                         />
                         <div class="absolute right-3 top-3">
-                            <svg x-show="!isWarning && !isExceeded" class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg x-show="!isWarning && !isExceeded && !isNegative" class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <svg x-show="isWarning" class="h-5 w-5 text-yellow-500 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                             </svg>
-                            <svg x-show="isExceeded" class="h-5 w-5 text-red-600 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                            <svg x-show="isExceeded || isNegative" class="h-5 w-5 text-red-600 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 2.526a6 6 0 008.367 8.364zm1.414-1.414A8 8 0 112.828 2.828a8 8 0 0111.314 11.314z" clip-rule="evenodd" />
                             </svg>
                         </div>
                     </div>
+                    
+                    <p x-show="showInvalidCharWarning" style="display: none;" x-transition class="text-sm text-red-500 font-semibold mt-1">
+                        ⚠️ Hanya format angka yang diizinkan!
+                    </p>
 
-                    <!-- Temperature Status Messages -->
                     <div class="mt-2 space-y-2">
-                        <!-- Safe Range -->
-                        <p x-show="temperature > 0 && temperature <= 90" class="text-sm text-green-600 flex items-center">
+                        <p x-show="temperature >= 0 && temperature <= 90 && temperature !== ''" class="text-sm text-green-600 flex items-center">
                             <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                             </svg>
                             Suhu aman untuk RNA
                         </p>
 
-                        <!-- Higher Safe Range (90-95) -->
                         <p x-show="isWarning" class="text-sm text-yellow-600 flex items-center">
                             <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
@@ -111,23 +121,25 @@
                             Peringatan: Suhu mendekati batas maksimal (>90°C)
                         </p>
 
-                        <!-- Exceeded Range -->
                         <p x-show="isExceeded" class="text-sm text-red-600 flex items-center font-semibold">
                             <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 2.526a6 6 0 008.367 8.364zm1.414-1.414A8 8 0 112.828 2.828a8 8 0 0111.314 11.314z" clip-rule="evenodd" />
                             </svg>
                             BERBAHAYA: Suhu melebihi 95.0°C! RNA akan rusak!
                         </p>
-                    </div>
 
-                    <!-- Server-side Error -->
-                    @error('temperature_celsius')
-                        <p class="mt-2 text-sm text-red-600 flex items-center">
+                        <p x-show="isNegative" class="text-sm text-red-600 flex items-center font-semibold">
                             <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 2.526a6 6 0 008.367 8.364zm1.414-1.414A8 8 0 112.828 2.828a8 8 0 0111.314 11.314z" clip-rule="evenodd" />
                             </svg>
-                            {{ $message }}
+                            TIDAK VALID: Suhu tidak boleh bernilai negatif!
                         </p>
+                    </div>
+                    
+                    @error('temperature_celsius')
+                        <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                            <strong>❌ Gagal Disimpan:</strong> {{ $message }}
+                        </div>
                     @enderror
                 </div>
 

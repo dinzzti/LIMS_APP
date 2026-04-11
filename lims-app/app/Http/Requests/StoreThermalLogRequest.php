@@ -23,7 +23,7 @@ class StoreThermalLogRequest extends FormRequest
     {
         return [
             'sample_id' => 'required|integer|exists:samples,id',
-            'temperature_celsius' => 'required|numeric|max:95.0',
+            'temperature_celsius' => 'required|numeric|min:0|max:95.0|decimal:0,1',
         ];
     }
 
@@ -39,8 +39,10 @@ class StoreThermalLogRequest extends FormRequest
             'sample_id.integer' => 'ID sampel harus berupa angka.',
             'sample_id.exists' => 'ID sampel tidak ditemukan dalam database.',
             'temperature_celsius.required' => 'Suhu pemanasan wajib diisi.',
-            'temperature_celsius.numeric' => 'Suhu pemanasan harus berupa angka.',
+            'temperature_celsius.numeric' => 'Suhu pemanasan harus berupa angka standar, gunakan titik sebagai pemisah desimal',
             'temperature_celsius.max' => 'Suhu pemanasan tidak boleh melebihi 95.0°C karena RNA akan rusak.',
+            'temperature_celsius.min' => 'Suhu pemanasan tidak boleh bernilai negatif.',
+            'temperature_celsius.decimal' => 'Format suhu maksimal hanya boleh memiliki 1 angka di belakang koma.',
         ];
     }
 }

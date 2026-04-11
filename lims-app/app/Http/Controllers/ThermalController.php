@@ -27,7 +27,6 @@ class ThermalController extends Controller
         return view('thermal.create', compact('samples', 'thermalLogs'));
     }
 
-
     /**
      * Store a newly created thermal log in storage.
      */

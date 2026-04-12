@@ -3,9 +3,7 @@
 use App\Http\Controllers\ThermalController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [ThermalController::class, 'create'])->name('thermal.create');
 
 Route::prefix('thermal')->group(function () {
     Route::get('/create', [ThermalController::class, 'create'])->name('thermal.create');

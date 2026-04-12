@@ -118,7 +118,7 @@ Route::prefix('thermal')->group(function () {
 ### 5. Temperature Input (Number)
 - **Label**: "Suhu Pemanasan (°C)" dengan tanda "*"
 - **Type**: Number input dengan step="0.1"
-- **Placeholder**: "Masukkan suhu (contoh: 85.5)"
+- **Placeholder**: "Masukkan suhu (contoh: 95.0)"
 - **Min/Max**: min="0" max="100"
 - **Real-time Validation**: Alpine.js untuk monitoring nilai input
 

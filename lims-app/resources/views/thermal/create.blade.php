@@ -88,7 +88,7 @@
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('temperature_celsius')
 border-red-500 focus:ring-red-500
 @enderror"
-                            placeholder="Masukkan suhu (contoh: 85.5)" value="{{ old('temperature_celsius') }}"
+                            placeholder="Masukkan suhu (contoh: 95.0)" value="{{ old('temperature_celsius') }}"
                             required />
                         <div class="absolute right-3 top-3">
                             <svg x-show="isOptimal" class="h-5 w-5 text-green-600 animate-pulse" fill="currentColor"

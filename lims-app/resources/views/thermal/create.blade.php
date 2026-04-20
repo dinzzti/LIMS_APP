@@ -18,6 +18,11 @@
                 <p class="text-gray-600 text-sm mt-1">Extraction-Free RT-PCR</p>
             </div>
 
+            <a href="{{ route('thermal.queue') }}"
+                class="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-semibold rounded-lg transition">
+                ← Kembali ke Dashboard
+            </a>
+
             <!-- Success Message -->
             @if (session('success'))
                 <div class="mb-4 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg" role="alert">
@@ -45,7 +50,7 @@
                         required>
                         <option value="">-- Pilih Sampel --</option>
                         @foreach ($samples as $sample)
-                            <option value="{{ $sample->id }}" @selected(old('sample_id') == $sample->id)>
+                            <option value="{{ $sample->id }}" @selected(old('sample_id', request('sample_id')) == $sample->id)>
                                 {{ $sample->sample_code }} - {{ $sample->patient_name }}
                             </option>
                         @endforeach
@@ -154,6 +159,19 @@ border-red-500 focus:ring-red-500
                 </div>
 
                 <!-- Info Box -->
+                <div>
+                    <label for="duration_minutes" class="block text-sm font-medium text-gray-700 mb-2">
+                        Durasi Pemanasan (menit) <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" id="duration_minutes" name="duration_minutes" min="5" max="30"
+                        value="{{ old('duration_minutes', 10) }}" placeholder="Contoh: 10"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('duration_minutes') border-red-500 focus:ring-red-500 @enderror"
+                        required />
+                    <p class="mt-1 text-xs text-gray-400">Rentang yang diizinkan: 5–30 menit</p>
+                    @error('duration_minutes')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
                 <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mt-6">
                     <div class="flex">
                         <svg class="h-5 w-5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">

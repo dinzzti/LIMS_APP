@@ -13,10 +13,13 @@ class ThermalLog extends Model
     protected $fillable = [
         'sample_id',
         'temperature_celsius',
+        'duration_minutes',
+        'started_at',
     ];
 
     protected $casts = [
         'temperature_celsius' => 'decimal:2',
+        'started_at' => 'datetime',
     ];
 
     public function sample(): BelongsTo

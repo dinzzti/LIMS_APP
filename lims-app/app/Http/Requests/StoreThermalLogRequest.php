@@ -24,6 +24,7 @@ class StoreThermalLogRequest extends FormRequest
         return [
             'sample_id' => 'required|integer|exists:samples,id',
             'temperature_celsius' => 'required|numeric|min:95.0|max:98.0|decimal:0,1',
+            'duration_minutes'    => 'required|integer|min:5|max:30',
         ];
     }
 
@@ -43,6 +44,10 @@ class StoreThermalLogRequest extends FormRequest
             'temperature_celsius.max' => 'Suhu pemanasan tidak boleh melebihi 98.0°C karena RNA akan rusak.',
             'temperature_celsius.min' => 'Suhu pemanasan tidak boleh kurang dari 95.0°C untuk memastikan denaturasi yang efektif.',
             'temperature_celsius.decimal' => 'Format suhu maksimal hanya boleh memiliki 1 angka di belakang koma.',
+            'duration_minutes.required' => 'Durasi pemanasan wajib diisi.',
+            'duration_minutes.integer'  => 'Durasi harus berupa bilangan bulat (menit).',
+            'duration_minutes.min'      => 'Durasi minimal 5 menit untuk inaktivasi efektif.',
+            'duration_minutes.max'      => 'Durasi maksimal 30 menit untuk mencegah degradasi RNA.',
         ];
     }
 }

@@ -13,6 +13,7 @@ class Sample extends Model
     protected $fillable = [
         'sample_code',
         'patient_name',
+        'status',
     ];
 
     public function thermalLogs(): HasMany

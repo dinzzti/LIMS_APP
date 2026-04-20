@@ -150,6 +150,7 @@ class SampleSeeder extends Seeder
             Sample::create([
                 'sample_code' => $sampleCode,
                 'patient_name' => $fullName,
+                'status' => 'waiting_thermal',
             ]);
         }
     }

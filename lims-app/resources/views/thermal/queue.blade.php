@@ -34,11 +34,19 @@
                         Jalur Inaktivasi Termal — Extraction-Free RT-PCR
                     </p>
                 </div>
-                <!-- Tombol ke form input suhu (US 2.2) -->
-                <a href="{{ route('thermal.create') }}"
-                    class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition">
-                    + Input Suhu Pemanasan
-                </a>
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-4">
+                    <a href="{{ route('thermal.create') }}"
+                        class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition">
+                        + Input Suhu Pemanasan
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 bg-red-100 text-red-600 hover:bg-red-200 text-sm font-semibold rounded-lg transition">
+                            Logout
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <!-- Statistik Ringkas -->

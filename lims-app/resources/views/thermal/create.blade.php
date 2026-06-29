@@ -18,10 +18,18 @@
                 <p class="text-gray-600 text-sm mt-1">Extraction-Free RT-PCR</p>
             </div>
 
-            <a href="{{ route('thermal.queue') }}"
-                class="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-semibold rounded-lg transition">
-                ← Kembali ke Dashboard
-            </a>
+            <div class="flex items-center justify-between mb-6">
+                <a href="{{ route('thermal.queue') }}"
+                    class="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-semibold rounded-lg transition">
+                    ← Kembali ke Dashboard
+                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="px-4 py-2 bg-red-100 text-red-600 hover:bg-red-200 text-sm font-semibold rounded-lg transition">
+                        Logout
+                    </button>
+                </form>
+            </div>
 
             <!-- Success Message -->
             @if (session('success'))
@@ -115,6 +123,9 @@ border-red-500 focus:ring-red-500
                             </svg>
                         </div>
                     </div>
+                    @error('temperature_celsius')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
 
                     <p x-show="showInvalidCharWarning" style="display: none;" x-transition
                         class="text-sm text-red-500 font-semibold mt-1">
